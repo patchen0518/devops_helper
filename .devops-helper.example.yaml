@@ -1,0 +1,106 @@
+# DevOps Helper — MCP Server Configuration Template
+# Copy this to .devops-helper.yaml and fill in your credentials.
+# .devops-helper.yaml is gitignored — never commit credentials.
+
+# Optional: override the default Gemini model
+# gemini_model: gemini-2.5-pro
+
+mcp_servers:
+
+  # AWS CloudWatch — metrics, logs, alarms
+  aws_cloudwatch:
+    command: uvx
+    args: ["awslabs.cloudwatch-mcp-server@latest"]
+    env:
+      AWS_REGION: "${AWS_REGION}"         # e.g. us-east-1
+
+  # AWS EKS — Elastic Kubernetes Service operations
+  aws_eks:
+    command: uvx
+    args: ["awslabs.eks-mcp-server@latest"]
+    env:
+      AWS_REGION: "${AWS_REGION}"
+
+  # Kubernetes — pods, deployments, logs, scaling
+  kubernetes:
+    command: uvx
+    args: ["kubernetes-mcp-server@latest"]
+
+  # GitHub + GitHub Actions — repos, workflow runs, PRs
+  # Requires Docker. Set GITHUB_TOKEN env var.
+  github:
+    command: docker
+    args:
+      - run
+      - -i
+      - --rm
+      - -e
+      - GITHUB_PERSONAL_ACCESS_TOKEN
+      - ghcr.io/github/github-mcp-server
+    env:
+      GITHUB_PERSONAL_ACCESS_TOKEN: "${GITHUB_TOKEN}"
+
+  # ArgoCD — application sync and status
+  argocd:
+    command: npx
+    args: ["-y", "argocd-mcp@latest", "stdio"]
+    env:
+      ARGOCD_BASE_URL: "${ARGOCD_URL}"     # e.g. https://argocd.example.com
+      ARGOCD_API_KEY: "${ARGOCD_TOKEN}"
+
+  # Grafana — dashboards, datasources, annotations
+  grafana:
+    command: uvx
+    args: ["mcp-grafana"]
+    env:
+      GRAFANA_URL: "${GRAFANA_URL}"        # e.g. http://grafana.example.com
+      GRAFANA_API_KEY: "${GRAFANA_TOKEN}"
+
+  # Prometheus — PromQL instant and range queries
+  prometheus:
+    command: uvx
+    args: ["prometheus-mcp-server@latest"]
+    env:
+      PROMETHEUS_URL: "${PROMETHEUS_URL}"  # e.g. http://prometheus.example.com:9090
+
+  # Terraform — Registry, HCP Terraform workspace management
+  # Requires Docker. Set TFE_TOKEN if using HCP Terraform.
+  terraform:
+    command: docker
+    args:
+      - run
+      - -i
+      - --rm
+      - -e
+      - TFE_TOKEN
+      - hashicorp/terraform-mcp-server:latest
+      - stdio
+    env:
+      TFE_TOKEN: "${TFE_TOKEN}"            # optional: HCP Terraform API token
+
+# Glob patterns for tools that require confirmation before executing.
+# Matched case-insensitively against the tool name.
+# Prefix patterns are safer than contains patterns (e.g. delete_* not *delete*).
+destructive_patterns:
+  - "delete_*"
+  - "stop_*"
+  - "terminate_*"
+  - "scale_*"
+  - "restart_*"
+  - "sync_*"
+  - "trigger_*"
+  - "create_*"
+  - "update_*"
+  - "apply_*"
+  - "destroy_*"
+  - "*_delete"
+  - "*_stop"
+  - "*_terminate"
+  - "*_scale"
+  - "*_restart"
+  - "*_sync"
+  - "*_trigger"
+  - "*_create"
+  - "*_update"
+  - "*_apply"
+  - "*_destroy"

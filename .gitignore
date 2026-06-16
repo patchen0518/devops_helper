@@ -1,0 +1,8 @@
+.devops-helper.yaml
+.env
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+dist/
+.ruff_cache
