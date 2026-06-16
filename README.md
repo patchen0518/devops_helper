@@ -57,10 +57,15 @@ Each integration is backed by an official or well-maintained MCP server. Configu
 | Kubernetes | Pods, deployments, logs, scaling, rollouts | kubeconfig |
 | AWS CloudWatch | Metrics, logs, alarms | AWS credentials + `AWS_REGION` |
 | AWS EKS | Cluster and node operations | AWS credentials + `AWS_REGION` |
+| AWS EC2 | Instance management, security groups, AMIs | AWS credentials + `AWS_REGION` |
+| AWS Lambda | Function invocation, logs, configuration | AWS credentials + `AWS_REGION` |
+| AWS IAM | Roles, policies, permission inspection | AWS credentials + `AWS_REGION` |
 | GitHub + Actions | Repos, workflow runs, PRs, issues | Docker + `GITHUB_TOKEN` |
 | ArgoCD | App sync status, trigger sync | `ARGOCD_URL` + `ARGOCD_TOKEN` |
 | Grafana | Dashboards, datasources, annotations | `GRAFANA_URL` + `GRAFANA_TOKEN` |
 | Prometheus | PromQL instant and range queries | `PROMETHEUS_URL` |
+| Sentry | Error tracking, release health, issue triage | `SENTRY_AUTH_TOKEN` |
+| Slack | Post messages, read channels, incident comms | `SLACK_BOT_TOKEN` + `SLACK_TEAM_ID` |
 | Terraform | Registry, HCP Terraform workspaces | Docker; `TFE_TOKEN` for HCP |
 
 ## Configuration

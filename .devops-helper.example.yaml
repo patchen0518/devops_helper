@@ -21,6 +21,27 @@ mcp_servers:
     env:
       AWS_REGION: "${AWS_REGION}"
 
+  # AWS EC2 — instance management, security groups, AMIs
+  aws_ec2:
+    command: uvx
+    args: ["awslabs.ec2-mcp-server@latest"]
+    env:
+      AWS_REGION: "${AWS_REGION}"
+
+  # AWS Lambda — function invocation, logs, configuration
+  aws_lambda:
+    command: uvx
+    args: ["awslabs.lambda-mcp-server@latest"]
+    env:
+      AWS_REGION: "${AWS_REGION}"
+
+  # AWS IAM — roles, policies, permission inspection (read-only by default)
+  aws_iam:
+    command: uvx
+    args: ["awslabs.iam-mcp-server@latest"]
+    env:
+      AWS_REGION: "${AWS_REGION}"
+
   # Kubernetes — pods, deployments, logs, scaling
   kubernetes:
     command: uvx
@@ -63,6 +84,23 @@ mcp_servers:
     env:
       PROMETHEUS_URL: "${PROMETHEUS_URL}"  # e.g. http://prometheus.example.com:9090
 
+  # Sentry — error tracking, release health, issue triage
+  # Set SENTRY_AUTH_TOKEN (User Auth Token from sentry.io/settings/account/api/auth-tokens/).
+  sentry:
+    command: npx
+    args: ["-y", "@sentry/mcp-server@latest"]
+    env:
+      SENTRY_AUTH_TOKEN: "${SENTRY_AUTH_TOKEN}"
+
+  # Slack — post messages, read channels, incident communication
+  # Set SLACK_BOT_TOKEN (from api.slack.com/apps) and SLACK_TEAM_ID (workspace ID).
+  slack:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-slack"]
+    env:
+      SLACK_BOT_TOKEN: "${SLACK_BOT_TOKEN}"
+      SLACK_TEAM_ID: "${SLACK_TEAM_ID}"
+
   # Terraform — Registry, HCP Terraform workspace management
   # Requires Docker. Set TFE_TOKEN if using HCP Terraform.
   terraform:
@@ -104,3 +142,7 @@ destructive_patterns:
   - "*_update"
   - "*_apply"
   - "*_destroy"
+  - "invoke_*"
+  - "*_invoke"
+  - "post_*"
+  - "send_*"
